@@ -112,8 +112,9 @@
                         <img src="{{ asset('storage/' . $product->image_path) }}"
                             alt="{{ $product->name }}"
                             class="transition-transform duration-500 group-hover:scale-110"
-                            style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;">
+                            style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center;"> <!-- Sửa cover thành contain ở đây -->
                     @else
+                        <!-- Giữ nguyên phần else -->
                         <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
                             <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="color:#4b5563;">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 18h16.5M3 3h18v18H3V3z"/>
@@ -125,9 +126,9 @@
                 {{-- INFO --}}
                 <div style="padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px;">
                     {{-- Sub-title --}}
-                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 500;">
+                    <!-- <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 500;">
                         Áo bóng đá thiết kế
-                    </span>
+                    </span> -->
 
                     {{-- Title --}}
                     <h3 class="group-hover:text-amber-400 transition-colors"

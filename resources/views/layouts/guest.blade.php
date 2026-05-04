@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'FootballStore') }}</title>
+    <title>{{ config('app.name', 'VT Store') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,7 +18,7 @@
            style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:32px; text-decoration:none;">
             <img src="{{ asset('storage/images/sport.png') }}" style="width:28px; height:28px; object-fit:contain;">
             <span style="font-size:16px; font-weight:700; color:#fff; letter-spacing:0.03em;">
-                {{ config('app.name', 'FootballStore') }}
+                {{ config('app.name', 'VT Store') }}
             </span>
         </a>
 

@@ -10,7 +10,7 @@
             </svg>
         </div>
         <h1 style="font-size:22px; font-weight:700; color:#f3f4f6; margin:0 0 8px 0;">Đặt hàng thành công!</h1>
-        <p style="font-size:13px; color:#6b7280; margin:0;">Cảm ơn bạn đã tin tưởng mua sắm tại FootballStore</p>
+        <p style="font-size:13px; color:#6b7280; margin:0;">Cảm ơn bạn đã tin tưởng mua sắm tại VT Store</p>
     </div>
 
     {{-- ORDER CODE --}}
