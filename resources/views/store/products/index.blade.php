@@ -98,46 +98,61 @@
         </div>
 
         {{-- PRODUCT GRID --}}
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {{-- Sử dụng CSS Grid inline để ép buộc chia cột, tự động co giãn thẻ card cỡ ~220px --}}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
             @forelse ($products as $product)
             <a href="{{ route('products.show', $product) }}"
-                class="group flex flex-col rounded-lg overflow-hidden border transition-all duration-200 hover:border-amber-400/40"
-                style="background:#111827; border-color:#1f2937;">
+                class="group transition-all duration-300 hover:-translate-y-1"
+                style="display: flex; flex-direction: column; background: #1f2937; border: 1px solid #374151; border-radius: 12px; overflow: hidden; text-decoration: none;">
 
                 {{-- IMAGE --}}
-                <div class="relative overflow-hidden" style="aspect-ratio:1/1; background:#0d1520;">
+                {{-- Ép khung ảnh tỷ lệ 4/5 cứng bằng inline css để ảnh không bị biến mất --}}
+                <div style="position: relative; overflow: hidden; width: 100%; aspect-ratio: 4/5; background: #0d1520;">
                     @if ($product->image_path)
                         <img src="{{ asset('storage/' . $product->image_path) }}"
                             alt="{{ $product->name }}"
-                            class="absolute inset-0 w-full h-full transition-transform duration-300 group-hover:scale-[1.04]"
-                            style="object-fit:cover; object-position:center;">
+                            class="transition-transform duration-500 group-hover:scale-110"
+                            style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;">
                     @else
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="color:#374151;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="color:#4b5563;">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 18h16.5M3 3h18v18H3V3z"/>
                             </svg>
                         </div>
                     @endif
-                    @if ($product->original_price && $product->original_price > $product->base_price)
-                        @php $pct = round((1 - $product->base_price / $product->original_price) * 100); @endphp
-                        <span class="absolute top-2 left-2 px-1.5 py-0.5 text-white font-bold rounded"
-                            style="background:#ef4444; font-size:10px;">-{{ $pct }}%</span>
-                    @endif
                 </div>
 
                 {{-- INFO --}}
-                <div class="px-3 py-3 flex flex-col gap-1 flex-1" style="border-top:1px solid #1f2937;">
-                    <h3 class="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-amber-400 transition-colors"
-                        style="color:#f3f4f6;">
+                <div style="padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px;">
+                    {{-- Sub-title --}}
+                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 500;">
+                        Áo bóng đá thiết kế
+                    </span>
+
+                    {{-- Title --}}
+                    <h3 class="group-hover:text-amber-400 transition-colors"
+                        style="font-size: 14px; font-weight: 600; line-height: 1.4; color: #f3f4f6; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                         {{ $product->name }}
                     </h3>
-                    <div class="flex items-baseline gap-1.5 flex-wrap mt-auto pt-2">
-                        <span class="text-sm font-bold" style="color:#fbbf24;">
-                            {{ number_format((float) $product->base_price, 0, ',', '.') }}đ
-                        </span>
+
+                    {{-- Price & Discount --}}
+                    <div style="margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+                        <div style="display: flex; align-items: baseline; gap: 8px;">
+                            <span style="font-size: 16px; font-weight: 700; color: #ef4444;">
+                                {{ number_format((float) $product->base_price, 0, ',', '.') }}đ
+                            </span>
+                            
+                            @if ($product->original_price && $product->original_price > $product->base_price)
+                                <span style="font-size: 12px; text-decoration: line-through; color: #6b7280;">
+                                    {{ number_format((float) $product->original_price, 0, ',', '.') }}đ
+                                </span>
+                            @endif
+                        </div>
+
                         @if ($product->original_price && $product->original_price > $product->base_price)
-                            <span class="text-xs line-through" style="color:#4b5563;">
-                                {{ number_format((float) $product->original_price, 0, ',', '.') }}đ
+                            @php $pct = round((1 - $product->base_price / $product->original_price) * 100); @endphp
+                            <span style="font-size: 12px; font-weight: 700; color: #ef4444;">
+                                -{{ $pct }}%
                             </span>
                         @endif
                     </div>
@@ -145,9 +160,9 @@
 
             </a>
             @empty
-            <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-                <p class="text-sm" style="color:#6b7280;">Không tìm thấy sản phẩm phù hợp.</p>
-                <a href="{{ route('products.index') }}" class="mt-3 text-xs" style="color:#fbbf24;">Xem tất cả</a>
+            <div style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 0; text-align: center;">
+                <p style="font-size: 14px; color: #6b7280;">Không tìm thấy sản phẩm phù hợp.</p>
+                <a href="{{ route('products.index') }}" style="margin-top: 12px; font-size: 12px; color: #fbbf24; text-decoration: none;">Xem tất cả</a>
             </div>
             @endforelse
         </div>
