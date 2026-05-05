@@ -7,6 +7,11 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AiChatController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'index'])->name('home');
@@ -47,3 +52,26 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+
+        Route::get('/register', [AdminAuthController::class, 'showRegister'])->name('register');
+        Route::post('/register', [AdminAuthController::class, 'register'])->name('register.submit');
+    });
+
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('categories', AdminCategoryController::class)->except(['show']);
+        Route::resource('products', AdminProductController::class)->except(['show']);
+
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [AdminOrderController::class, 'edit'])->name('orders.edit');
+        Route::patch('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+    });
+});
