@@ -37,11 +37,11 @@
         @forelse ($orders as $order)
         @php
             $statusColor = match($order->status) {
-                'pending'    => ['bg' => 'rgba(251,191,36,0.1)',  'color' => '#fbbf24',  'text' => 'Chờ xử lý'],
-                'processing' => ['bg' => 'rgba(59,130,246,0.1)', 'color' => '#60a5fa',  'text' => 'Đang xử lý'],
-                'shipping'   => ['bg' => 'rgba(139,92,246,0.1)', 'color' => '#a78bfa',  'text' => 'Đang giao'],
-                'completed'  => ['bg' => 'rgba(34,197,94,0.1)',  'color' => '#4ade80',  'text' => 'Hoàn thành'],
-                'cancelled'  => ['bg' => 'rgba(239,68,68,0.1)',  'color' => '#f87171',  'text' => 'Đã hủy'],
+                'Chờ xử lý'    => ['bg' => 'rgba(251,191,36,0.1)',  'color' => '#fbbf24',  'text' => 'Chờ xử lý'],
+                'Đang xử lý' => ['bg' => 'rgba(59,130,246,0.1)', 'color' => '#60a5fa',  'text' => 'Đang xử lý'],
+                'Đang giao'   => ['bg' => 'rgba(139,92,246,0.1)', 'color' => '#a78bfa',  'text' => 'Đang giao'],
+                'Hoàn thành'  => ['bg' => 'rgba(34,197,94,0.1)',  'color' => '#4ade80',  'text' => 'Hoàn thành'],
+                'Đã hủy'  => ['bg' => 'rgba(239,68,68,0.1)',  'color' => '#f87171',  'text' => 'Đã hủy'],
                 default      => ['bg' => 'rgba(107,114,128,0.1)','color' => '#9ca3af',  'text' => ucfirst($order->status)],
             };
         @endphp

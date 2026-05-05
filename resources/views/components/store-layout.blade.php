@@ -30,6 +30,10 @@
                             class="text-sm transition-colors hover:text-white" style="color:#9ca3af; white-space:nowrap;">
                                 Sản phẩm
                             </a>
+                            <a href="{{ route('ai-chat.index') }}"
+                            class="text-sm transition-colors hover:text-white" style="color:#9ca3af; white-space:nowrap;">
+                                Chat AI
+                            </a>
                             <a href="{{ route('orders.track.form') }}"
                             class="text-sm transition-colors hover:text-white" style="color:#9ca3af; white-space:nowrap;">
                                 Tra cứu đơn

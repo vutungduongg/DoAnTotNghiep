@@ -41,4 +41,12 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'ai' => [
+        'enabled' => env('AI_ENABLED', false),
+        'base_url' => env('AI_BASE_URL', env('OPENAI_BASE_URL', 'https://api.openai.com/v1')),
+        'api_key' => env('AI_API_KEY', env('OPENAI_API_KEY')),
+        'model' => env('AI_MODEL', env('OPENAI_MODEL', 'gpt-4o-mini')),
+        'timeout' => env('AI_TIMEOUT', env('OPENAI_TIMEOUT', 20)),
+    ],
+
 ];

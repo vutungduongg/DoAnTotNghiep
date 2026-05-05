@@ -83,6 +83,13 @@
                     <option value="newest" @selected(($filters['sort'] ?? '') == 'newest')>Mới nhất</option>
                 </select>
 
+                <select name="type" class="px-4 py-2.5 rounded-lg text-sm focus:outline-none cursor-pointer"
+                        style="background:#1f2937; border:1px solid #374151; color:#d1d5db;">
+                    <option value="">Loại</option>
+                    <option value="ao_dau" @selected(($filters['type'] ?? '') == 'ao_dau')>Áo đấu</option>
+                    <option value="giay" @selected(($filters['type'] ?? '') == 'giay')>Giày</option>
+                </select>
+
                 <button type="submit" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors"
                         style="background:#fbbf24; color:#111827;">
                     Tìm

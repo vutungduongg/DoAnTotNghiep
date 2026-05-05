@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ProductController extends Controller
 {
@@ -19,13 +20,45 @@ class ProductController extends Controller
             $productsQuery->where('name', 'like', '%'.$q.'%');
         }
 
-        $category = $request->query('category');
-        if (is_string($category) && $category !== '') {
-            if (ctype_digit($category)) {
-                $productsQuery->where('category_id', (int) $category);
-            } else {
-                $productsQuery->whereHas('category', fn ($q) => $q->where('slug', $category));
+        $type = $request->query('type');
+        if (is_string($type) && $type !== '') {
+            if ($type === 'ao_dau') {
+                $productsQuery->whereHas('category', fn ($q) => $q->where('slug', 'ao-the-thao'));
             }
+            if ($type === 'giay') {
+                $productsQuery->whereHas('category', fn ($q) => $q->where('slug', 'giay-bong-da'));
+            }
+        }
+
+        $categoryInput = $request->query('category');
+        $categoryValues = Arr::wrap($categoryInput);
+        $categoryValues = array_values(array_filter(array_map(fn ($v) => is_string($v) ? trim($v) : $v, $categoryValues), fn ($v) => $v !== null && $v !== ''));
+
+        $categoryIds = [];
+        $categorySlugs = [];
+        foreach ($categoryValues as $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            if (ctype_digit($value)) {
+                $categoryIds[] = (int) $value;
+            } else {
+                $categorySlugs[] = $value;
+            }
+        }
+
+        $resolvedCategoryIds = [];
+        if (!empty($categorySlugs)) {
+            $resolvedCategoryIds = Category::query()
+                ->whereIn('slug', array_unique($categorySlugs))
+                ->pluck('id')
+                ->all();
+        }
+
+        $allCategoryIds = array_values(array_unique(array_merge($categoryIds, $resolvedCategoryIds)));
+        if (!empty($allCategoryIds)) {
+            $productsQuery->whereIn('category_id', $allCategoryIds);
         }
 
         $minPrice = $request->query('min_price');
@@ -38,8 +71,20 @@ class ProductController extends Controller
             $productsQuery->where('base_price', '<=', (float) $maxPrice);
         }
 
+        $sort = $request->query('sort');
+        if (!is_string($sort)) {
+            $sort = '';
+        }
+        $sort = trim($sort);
+
+        match ($sort) {
+            'price_asc' => $productsQuery->orderBy('base_price', 'asc')->orderBy('id', 'desc'),
+            'price_desc' => $productsQuery->orderBy('base_price', 'desc')->orderBy('id', 'desc'),
+            'newest' => $productsQuery->orderByDesc('created_at')->orderByDesc('id'),
+            default => $productsQuery->orderByDesc('id'),
+        };
+
         $products = $productsQuery
-            ->latest('id')
             ->paginate(12)
             ->withQueryString();
 
@@ -53,9 +98,11 @@ class ProductController extends Controller
             'categories' => $categories,
             'filters' => [
                 'q' => $q,
-                'category' => $category,
+                'type' => $type,
+                'category' => array_values(array_unique($categorySlugs)),
                 'min_price' => $minPrice,
                 'max_price' => $maxPrice,
+                'sort' => $sort,
             ],
         ]);
     }

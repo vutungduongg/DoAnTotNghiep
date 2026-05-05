@@ -11,10 +11,10 @@ class Order extends Model
 {
     use HasFactory;
 
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_SHIPPING = 'shipping';
-    public const STATUS_DELIVERED = 'delivered';
-    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_PENDING = 'Chờ xử lý';
+    public const STATUS_SHIPPING = 'Đang giao';
+    public const STATUS_DELIVERED = 'Hoàn thành';
+    public const STATUS_CANCELLED = 'Đã hủy';
 
     public const STATUSES = [
         self::STATUS_PENDING,
