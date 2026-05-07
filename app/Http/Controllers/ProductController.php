@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -71,6 +72,28 @@ class ProductController extends Controller
             $productsQuery->where('base_price', '<=', (float) $maxPrice);
         }
 
+        $studInput = $request->query('stud');
+        $studValues = Arr::wrap($studInput);
+        $studValues = array_values(array_unique(array_filter(array_map(fn ($v) => is_string($v) ? strtoupper(trim($v)) : $v, $studValues), fn ($v) => is_string($v) && in_array($v, ['AG', 'FG', 'TF'], true))));
+
+        if (!empty($studValues)) {
+            $productsQuery->where(function ($q) use ($studValues) {
+                foreach ($studValues as $stud) {
+                    $q->orWhere('name', 'like', '%'.$stud.'%');
+                }
+            });
+        }
+
+        $productsQueryForFacets = clone $productsQuery;
+
+        $sizeInput = $request->query('size');
+        $sizeValues = Arr::wrap($sizeInput);
+        $sizeValues = array_values(array_unique(array_filter(array_map(fn ($v) => is_string($v) ? trim($v) : $v, $sizeValues), fn ($v) => is_string($v) && $v !== '')));
+
+        if (!empty($sizeValues)) {
+            $productsQuery->whereHas('variants', fn ($q) => $q->whereIn('size', $sizeValues));
+        }
+
         $sort = $request->query('sort');
         if (!is_string($sort)) {
             $sort = '';
@@ -93,15 +116,26 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get();
 
+        $availableSizes = ProductVariant::query()
+            ->whereIn('product_id', $productsQueryForFacets->select('products.id'))
+            ->select('size')
+            ->distinct()
+            ->orderBy('size')
+            ->pluck('size')
+            ->all();
+
         return view('store.products.index', [
             'products' => $products,
             'categories' => $categories,
+            'availableSizes' => $availableSizes,
             'filters' => [
                 'q' => $q,
                 'type' => $type,
                 'category' => array_values(array_unique($categorySlugs)),
                 'min_price' => $minPrice,
                 'max_price' => $maxPrice,
+                'stud' => $studValues,
+                'size' => $sizeValues,
                 'sort' => $sort,
             ],
         ]);
