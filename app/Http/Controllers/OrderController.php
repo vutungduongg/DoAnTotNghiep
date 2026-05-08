@@ -43,7 +43,7 @@ class OrderController extends Controller
     {
         abort_unless($order->user_id === Auth::id(), 403);
 
-        $order->load('items');
+        $order->load(['items.product']);
 
         return view('store.orders.show', [
             'order' => $order,
@@ -74,7 +74,7 @@ class OrderController extends Controller
                 ->withInput();
         }
 
-        $order->load('items');
+        $order->load(['items.product']);
 
         return view('store.orders.show', [
             'order' => $order,
@@ -97,7 +97,7 @@ class OrderController extends Controller
 
         abort_unless($allowed, 403);
 
-        $order->load('items');
+        $order->load(['items.product']);
 
         return view('store.orders.thankyou', [
             'order' => $order,
