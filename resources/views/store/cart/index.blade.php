@@ -89,10 +89,10 @@
                 <section class="lg:col-span-8">
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                         <div class="hidden md:grid grid-cols-12 gap-3 px-6 py-4 border-b border-slate-200 text-xs font-semibold tracking-wide uppercase text-slate-500">
-                            <div class="col-span-6">Sản phẩm</div>
+                            <div class="col-span-7">Sản phẩm</div>
                             <div class="col-span-2">Giá</div>
                             <div class="col-span-2">Số lượng</div>
-                            <div class="col-span-2 text-right">Thành tiền</div>
+                            <div class="col-span-1 text-right">Thành tiền</div>
                         </div>
 
                         @foreach ($items as $key => $item)
@@ -112,10 +112,24 @@
                                     </div>
 
                                     <div class="min-w-0">
-                                        <div class="text-sm font-semibold text-slate-900 leading-snug">
-                                            {{ $item['name'] }}
+                                        @php
+                                            $nameLines = preg_split("/\r\n|\r|\n/u", (string) ($item['name'] ?? '')) ?: [];
+                                            $nameLines = array_values(array_filter(array_map('trim', $nameLines), fn ($v) => $v !== ''));
+                                        @endphp
+
+                                        <div class="text-sm font-semibold text-slate-900 leading-6 break-words">
+                                            {{ $nameLines[0] ?? (string) ($item['name'] ?? '') }}
                                         </div>
-                                        <div class="mt-1 text-xs text-slate-500">
+
+                                        @if (count($nameLines) > 1)
+                                            <div class="mt-1 space-y-1">
+                                                @foreach (array_slice($nameLines, 1) as $line)
+                                                    <div class="text-xs font-medium text-slate-700 leading-6 break-words">{{ $line }}</div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        <div class="mt-2 text-xs text-slate-500 leading-6">
                                             @if (!empty($item['size']))
                                                 Kích cỡ: <span class="font-semibold text-slate-700">{{ $item['size'] }}</span>
                                             @else
