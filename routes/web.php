@@ -24,13 +24,15 @@ Route::get('/ai-chat', [AiChatController::class, 'index'])->name('ai-chat.index'
 Route::post('/ai-chat/message', [AiChatController::class, 'message'])->name('ai-chat.message');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/{key}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{key}', [CartController::class, 'remove'])->name('cart.remove');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+Route::middleware('auth')->group(function () {
+    Route::post('/cart', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/{key}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{key}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
-Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+});
 
 Route::get('/orders/track', [OrderController::class, 'trackForm'])->name('orders.track.form');
 Route::post('/orders/track', [OrderController::class, 'track'])->name('orders.track');

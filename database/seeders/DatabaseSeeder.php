@@ -35,6 +35,11 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Giày bóng đá', 'description' => 'Giày đá sân cỏ nhân tạo/tự nhiên', 'is_active' => true]
         );
 
+        $accessories = Category::query()->firstOrCreate(
+            ['slug' => 'phu-kien'],
+            ['name' => 'Phụ kiện bóng đá', 'description' => 'Phụ kiện hỗ trợ tập luyện và thi đấu bóng đá', 'is_active' => true]
+        );
+
         $p1 = Product::query()->firstOrCreate(
             ['slug' => 'ao-the-thao-nam-vang-xanh-nang-dong'],
             [
@@ -773,6 +778,427 @@ class DatabaseSeeder extends Seeder
             ProductVariant::query()->firstOrCreate(
                 ['product_id' => $p40->id, 'size' => $size],
                 ['stock' => 30]
+            );
+        }
+
+                // Phụ kiện bóng đá
+        $p41 = Product::query()->firstOrCreate(
+            ['slug' => 'Pack-3-doi-vo-nike-everyday-plus-cushioned-crew'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/41.jpg',
+                'name' => 'Pack 3 đôi vớ Nike Everyday Plus Cushioned Crew',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: DH3822-908-S.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 539000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['S', 'M', 'L', 'XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p41->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p42 = Product::query()->firstOrCreate(
+            ['slug' => 'pack-3-doi-vo-nike-everyday-plus-cushioned-crew'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/42.jpeg',
+                'name' => 'Pack 3 đôi vớ Nike Everyday Plus Cushioned Crew',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: DH3822-902-XL.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 339000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['S', 'M', 'L', 'XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p42->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p43 = Product::query()->firstOrCreate(
+            ['slug' => 'Vo-bong-da-nike-everyday-plus-cushioned-trainings-white-baltic-blue'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/43.jpg',
+                'name' => 'Vớ bóng đá Nike Everyday Plus Cushioned Trainings - White/Baltic Blue',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: DD2795-103-S.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 199000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['S', 'M', 'L', 'XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p43->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p44 = Product::query()->firstOrCreate(
+            ['slug' => 'tVo-bong-da-nike-everyday-plus-cushioned-trainings-black-white'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/44.jpg',
+                'name' => 'Vớ bóng đá Nike Everyday Plus Cushioned Trainings - Black/White',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: DD2795-011-S.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['S', 'M', 'L', 'XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p44->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p45 = Product::query()->firstOrCreate(
+            ['slug' => 'chai-xit-lanh-giam-dau-ligpro-200ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/45.jpg',
+                'name' => 'Chai xịt lạnh giảm đau LIGPRO 200ml',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: LIGPRO-COLD-200ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['200ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p45->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p46 = Product::query()->firstOrCreate(
+            ['slug' => 'chai-xit-lam-nong-co-ligpro-200ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/46.jpg',
+                'name' => 'Chai xịt làm nóng cơ LIGPRO 200ml',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: LIGPRO-WARM-200ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['200ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p46->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p47 = Product::query()->firstOrCreate(
+            ['slug' => 'lot-giay-bong-da-chinh-hang-nms-insoles-200ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/47.jpg',
+                'name' => 'Lót giày bóng đá chính hãng NMS INSOLES',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: NMS-INSOLE-200ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 139000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['S', 'M', 'L', 'XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p47->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+        
+        $p48 = Product::query()->firstOrCreate(
+            ['slug' => 'tui-hop-dung-giay-vtstore-q2-2022'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/48.jpg',
+                'name' => 'TÚI HỘP ĐỰNG GIÀY VTStore Q2/2022',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: TUIHOP-NMSQ2-2022-GREEN.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['XANH LÁ CÂY','ĐỎ','ĐEN'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p48->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p49 = Product::query()->firstOrCreate(
+            ['slug' => 'balo-vtstore-football-backpack-2022'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/49.jpg',
+                'name' => 'BALO VTSTORE FOOTBALL BACKPACK 2022',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: NMS-BACKPACK2022-BLACK.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 339000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['ĐEN','XANH DƯƠNG','ĐỎ','XÁM','CAM'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p49->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p50 = Product::query()->firstOrCreate(
+            ['slug' => 'dep-chinh-hang-adidas-adilette-spain-red-yellow'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/50.jpeg',
+                'name' => 'Dép chính hãng Adidas Adilette Spain - Red/Yellow',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: G55382-43.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['40','41','42','43','44'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p50->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p51 = Product::query()->firstOrCreate(
+            ['slug' => 'vớ-bóng-đá-nike-academy-socks-white-black'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/51.jpeg',
+                'name' => 'Vớ bóng đá Nike Academy Socks - White/Black',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: SX4120-101-XS.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 339000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['XS','S','M','L','XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p51->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p52 = Product::query()->firstOrCreate(
+            ['slug' => 'vớ-bóng-đá-nike-academy-socks-black-white'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/52.jpeg',
+                'name' => 'Vớ bóng đá Nike Academy Socks - Black/White',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: SX4120-001-XS.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['XS','S','M','L','XL'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p52->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p53 = Product::query()->firstOrCreate(
+            ['slug' => 'gel-lanh-giam-dau-starbalm-sportcare-25ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/53.jpg',
+                'name' => 'GEL LẠNH GIẢM ĐAU STARBALM SPORTCARE 25ML',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: GEL-LANH-25ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 99000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['25ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p53->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p54 = Product::query()->firstOrCreate(
+            ['slug' => 'vớ-vân-chống-trơn-neymarsport-creator-365'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/54.jpg',
+                'name' => 'VỚ VÂN CHỐNG TRƠN NEYMARSPORT CREATOR 365',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: NMS-CREATOR365-BLACK-M.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 439000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['M','L'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p54->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p55 = Product::query()->firstOrCreate(
+            ['slug' => 'cay-mang-giay-goldcare-18cm-mau-ngau-nhien'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/55.jpg',
+                'name' => 'CÂY MANG GIÀY GOLDCARE 18CM MÀU NGẪU NHIÊN',
+                'description' => "Nhãn Hiệu: VTStore.\n
+                                    SKU: GOLDCARE-18CM.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 139000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['18cm'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p55->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p56 = Product::query()->firstOrCreate(
+            ['slug' => 'chai-lam-nong-starbalm-75ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/56.jpg',
+                'name' => 'CHAI LÀM NÓNG STARBALM 75ML',
+                'description' => "Nhãn Hiệu: STARBALM.\n
+                                    SKU: CHAI-LAN-LAM-NONG-75ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 139000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['75ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p56->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p57 = Product::query()->firstOrCreate(
+            ['slug' => 'gel-lam-nong-starbalm-100ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/57.jpg',
+                'name' => 'Gel Làm Nóng STARBALM 100ML',
+                'description' => "Nhãn Hiệu: STARBALM.\n
+                                    SKU: GEL-LAM-NONG-100ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 139000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['100ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p57->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p58 = Product::query()->firstOrCreate(
+            ['slug' => 'chai-lam-lanh-starbalm-100ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/58.jpg',
+                'name' => 'Gel Làm Lạnh STARBALM 100ML',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                   SKU: GEL-LANH-100ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 139000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['100ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p58->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p59 = Product::query()->firstOrCreate(
+            ['slug' => 'chai-xit-lanh-starbalm-150ml'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/59.jpg',
+                'name' => 'Chai Xịt Lạnh STARBALM 150ML',
+                'description' => "Nhãn Hiệu: STARBALM.\n
+                                    SKU: XIT-LANH-150ML.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 239000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['150ml'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p59->id, 'size' => $size],
+                ['stock' => 50]
+            );
+        }
+
+        $p60 = Product::query()->firstOrCreate(
+            ['slug' => 'tui-gymsack-nike-venom-new-lights'],
+            [
+                'category_id' => $accessories->id,
+                'image_path' => 'images/60.jpg',
+                'name' => 'TÚI GYMSACK NIKE VENOM "NEW LIGHTS"',
+                'description' => "Nhãn Hiệu: NIKE.\n
+                                    SKU: GYM-VNM-717.\n
+                                    Đơn vị phân phối: Công ty TNHH VTStore",
+                'base_price' => 99000,
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['XÁNH LÁ CÂY'] as $size) {
+            ProductVariant::query()->firstOrCreate(
+                ['product_id' => $p60->id, 'size' => $size],
+                ['stock' => 50]
             );
         }
     }

@@ -39,9 +39,9 @@
                 </a>
 
                 <nav class="hidden md:flex items-center gap-6 text-xs font-semibold tracking-wide text-slate-700">
-                    <a class="hover:text-slate-900" href="{{ route('products.index') }}">Shop All</a>
-                    <a class="hover:text-slate-900" href="{{ route('products.index', ['type' => 'giay']) }}">Footwear</a>
-                    <a class="hover:text-slate-900" href="{{ route('products.index', ['type' => 'ao_dau']) }}">Apparel</a>
+                    <a class="hover:text-slate-900" href="{{ route('products.index') }}">Tất cả sản phẩm</a>
+                    <a class="hover:text-slate-900" href="{{ route('products.index', ['type' => 'giay']) }}">Giày bóng đá</a>
+                    <a class="hover:text-slate-900" href="{{ route('products.index', ['type' => 'ao_dau']) }}">Áo thể thao</a>
                 </nav>
 
                 <form class="flex-1 flex justify-center" method="GET" action="{{ route('products.index') }}">
@@ -69,6 +69,12 @@
                             </span>
                         @endif
                     </a>
+
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Đơn hàng</a>
+                    @else
+                        <a href="{{ route('orders.track.form') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Tra cứu đơn</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -251,6 +257,8 @@
             </div>
         </section>
     </main>
+
+    @include('store.partials.ai-chat-widget')
 
 </body>
 </html>

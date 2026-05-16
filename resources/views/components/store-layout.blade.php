@@ -1,3 +1,8 @@
+@props([
+    'title' => null,
+    'showChatWidget' => true,
+])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="background:#030712;">
     <head>
@@ -59,6 +64,13 @@
                         </a>
 
                         @auth
+                            <a href="{{ route('orders.index') }}"
+                               class="hidden md:inline text-sm transition-colors hover:text-white" style="color:#9ca3af; white-space:nowrap;">
+                                Đơn hàng
+                            </a>
+                        @endauth
+
+                        @auth
                             <a href="{{ route('profile.edit') }}"
                                class="text-sm transition-colors hover:text-white" style="color:#9ca3af;">
                                 Tài khoản
@@ -94,6 +106,10 @@
         @endif
 
         <main>{{ $slot }}</main>
+
+        @if ($showChatWidget)
+            @include('store.partials.ai-chat-widget')
+        @endif
 
     </body>
 </html>

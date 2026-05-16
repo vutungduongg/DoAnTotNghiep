@@ -57,6 +57,12 @@
                             </span>
                         @endif
                     </a>
+
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Đơn hàng</a>
+                    @else
+                        <a href="{{ route('orders.track.form') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Tra cứu đơn</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -189,6 +195,8 @@
             </aside>
         </div>
     </main>
+
+    @include('store.partials.ai-chat-widget')
 
 </body>
 </html>

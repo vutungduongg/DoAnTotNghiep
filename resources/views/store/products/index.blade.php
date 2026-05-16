@@ -97,6 +97,12 @@
                             </span>
                         @endif
                     </a>
+
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Đơn hàng</a>
+                    @else
+                        <a href="{{ route('orders.track.form') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Tra cứu đơn</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -297,7 +303,7 @@
                 <div>
                     <div class="text-emerald-400 font-extrabold italic">VT STORE</div>
                     <p class="mt-3 text-sm text-slate-300">
-                        Elite Football Performance. Chuyên cung cấp giày đá bóng chính hãng và phụ kiện thể thao cao cấp.
+                        Hiệu năng bóng đá đỉnh cao. Chuyên cung cấp giày đá bóng chính hãng và phụ kiện thể thao cao cấp.
                     </p>
                 </div>
 
@@ -327,7 +333,7 @@
             </div>
 
             <div class="mt-10 pt-6 border-t border-white/10 text-xs text-slate-400 flex items-center justify-between">
-                <span>© {{ date('Y') }} VT Store. All rights reserved.</span>
+                <span>© {{ date('Y') }} VT Store. Bản quyền thuộc về VT Store.</span>
                 <span class="hidden sm:inline">{{ $pageLabel }}</span>
             </div>
         </div>
@@ -343,6 +349,8 @@
             });
         })();
     </script>
+
+    @include('store.partials.ai-chat-widget')
 
 </body>
 </html>

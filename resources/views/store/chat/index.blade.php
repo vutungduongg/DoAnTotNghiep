@@ -1,4 +1,4 @@
-<x-store-layout title="Chat AI">
+<x-store-layout title="Chat AI" :showChatWidget="false">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap');
 

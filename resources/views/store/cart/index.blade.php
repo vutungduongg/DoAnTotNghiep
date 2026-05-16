@@ -61,6 +61,12 @@
                             </span>
                         @endif
                     </a>
+
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Đơn hàng</a>
+                    @else
+                        <a href="{{ route('orders.track.form') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Tra cứu đơn</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -92,7 +98,7 @@
                             <div class="col-span-7">Sản phẩm</div>
                             <div class="col-span-2">Giá</div>
                             <div class="col-span-2">Số lượng</div>
-                            <div class="col-span-1 text-right">Thành tiền</div>
+                            <div class="col-span-1 text-right whitespace-nowrap">Thành tiền</div>
                         </div>
 
                         @foreach ($items as $key => $item)
@@ -111,25 +117,25 @@
                                         @endif
                                     </div>
 
-                                    <div class="min-w-0">
+                                    <div class="min-w-0 space-y-2">
                                         @php
                                             $nameLines = preg_split("/\r\n|\r|\n/u", (string) ($item['name'] ?? '')) ?: [];
                                             $nameLines = array_values(array_filter(array_map('trim', $nameLines), fn ($v) => $v !== ''));
                                         @endphp
 
-                                        <div class="text-sm font-semibold text-slate-900 leading-6 break-words">
+                                        <div class="text-sm font-semibold text-slate-900 leading-relaxed break-words">
                                             {{ $nameLines[0] ?? (string) ($item['name'] ?? '') }}
                                         </div>
 
                                         @if (count($nameLines) > 1)
-                                            <div class="mt-1 space-y-1">
+                                            <div class="space-y-1">
                                                 @foreach (array_slice($nameLines, 1) as $line)
-                                                    <div class="text-xs font-medium text-slate-700 leading-6 break-words">{{ $line }}</div>
+                                                    <div class="text-xs font-medium text-slate-700 leading-relaxed break-words">{{ $line }}</div>
                                                 @endforeach
                                             </div>
                                         @endif
 
-                                        <div class="mt-2 text-xs text-slate-500 leading-6">
+                                        <div class="text-xs text-slate-500 leading-relaxed">
                                             @if (!empty($item['size']))
                                                 Kích cỡ: <span class="font-semibold text-slate-700">{{ $item['size'] }}</span>
                                             @else
@@ -244,6 +250,8 @@
             </div>
         @endif
     </main>
+
+    @include('store.partials.ai-chat-widget')
 
 </body>
 </html>
