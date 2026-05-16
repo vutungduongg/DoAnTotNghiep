@@ -95,7 +95,15 @@
 
                     <div class="relative">
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-white/10">
-                            <div class="h-full w-full bg-gradient-to-br from-emerald-500/10 via-slate-900 to-blue-500/10"></div>
+                            <a href="{{ route('products.index') }}" class="relative block h-full w-full" aria-label="Xem sản phẩm">
+                                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-slate-900 to-blue-500/10"></div>
+                                <img
+                                    src="{{ asset('storage/images/BG.jpg') }}"
+                                    alt="Sản phẩm VT Store"
+                                    class="absolute inset-0 h-full w-full object-cover object-center"
+                                    loading="lazy"
+                                />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -197,10 +205,9 @@
                     Đăng ký nhận bản tin để cập nhật mẫu mới nhất và ưu đãi độc quyền.
                 </p>
 
-                <form class="mt-6 flex items-center justify-center gap-2" method="GET" action="{{ route('products.index') }}">
+                <form class="mt-6 flex items-center justify-center gap-2" method="GET" action="{{ route('register') }}">
                     <input
                         type="email"
-                        name="newsletter"
                         placeholder="Email của bạn"
                         class="h-10 w-full max-w-sm px-3 rounded border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
                     />
@@ -236,7 +243,15 @@
                     <p class="text-sm font-semibold text-white">HỖ TRỢ</p>
                     <ul class="mt-3 space-y-2 text-sm text-slate-300">
                         <li><a class="hover:text-white" href="{{ route('orders.track.form') }}">Tra cứu đơn hàng</a></li>
-                        <li><a class="hover:text-white" href="{{ route('ai-chat.index') }}">Chat AI</a></li>
+                        <li>
+                            <a
+                                class="hover:text-white"
+                                href="{{ route('ai-chat.index') }}"
+                                onclick="if (window.VT_AI_CHAT_WIDGET && typeof window.VT_AI_CHAT_WIDGET.open === 'function') { window.VT_AI_CHAT_WIDGET.open(); return false; }"
+                            >
+                                Chat AI
+                            </a>
+                        </li>
                         <li><a class="hover:text-white" href="{{ route('orders.index') }}">Đơn hàng</a></li>
                     </ul>
                 </div>
@@ -253,7 +268,6 @@
 
             <div class="mt-10 pt-6 border-t border-white/10 text-xs text-slate-400 flex items-center justify-between">
                 <span>© {{ date('Y') }} VT Store. Bản quyền thuộc về VT Store.</span>
-                <span class="hidden sm:inline">Xây dựng bằng Laravel</span>
             </div>
         </div>
     </footer>

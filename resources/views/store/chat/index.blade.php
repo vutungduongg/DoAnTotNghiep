@@ -1,391 +1,114 @@
 <x-store-layout title="Chat AI" :showChatWidget="false">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap');
+    <div class="mx-auto max-w-5xl px-6 py-8">
+        <header class="flex items-start gap-3">
+            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white text-xs font-extrabold">
+                VT
+            </span>
 
-        :root {
-            --brand: #f59e0b;
-            --brand-dim: #fbbf2422;
-            --surface: #0d1117;
-            --surface-2: #161b22;
-            --surface-3: #21262d;
-            --border: #30363d;
-            --border-hover: #484f58;
-            --text-1: #e6edf3;
-            --text-2: #8b949e;
-            --text-3: #656d76;
-            --user-bg: #1f2937;
-            --ai-bg: #0d1117;
-            --radius: 12px;
-            --radius-sm: 8px;
-        }
-
-        * { box-sizing: border-box; }
-
-        body, .chat-root {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            background: var(--surface);
-        }
-
-        /* === LAYOUT === */
-        .chat-root {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 28px 24px 48px;
-        }
-
-        /* === HEADER === */
-        .chat-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .chat-header-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--brand-dim);
-            border: 1px solid #f59e0b44;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .chat-header-icon svg { width: 18px; height: 18px; color: var(--brand); }
-        .chat-header h1 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-1);
-            margin: 0;
-            letter-spacing: -.01em;
-        }
-        .chat-header p {
-            font-size: 12px;
-            color: var(--text-3);
-            margin: 2px 0 0;
-        }
-
-        /* === CHAT BOX === */
-        .chat-box {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* === MESSAGES === */
-        #chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-height: 300px;
-            max-height: 440px;
-            scroll-behavior: smooth;
-        }
-        #chat-messages::-webkit-scrollbar { width: 4px; }
-        #chat-messages::-webkit-scrollbar-track { background: transparent; }
-        #chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-        .msg-row { display: flex; align-items: flex-end; gap: 8px; }
-        .msg-row.user { flex-direction: row-reverse; }
-
-        .msg-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 600;
-        }
-        .msg-avatar.ai {
-            background: var(--brand-dim);
-            border: 1px solid #f59e0b33;
-            color: var(--brand);
-        }
-        .msg-avatar.user {
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            color: var(--text-2);
-        }
-
-        .msg-bubble {
-            max-width: 78%;
-            padding: 10px 14px;
-            border-radius: var(--radius);
-            font-size: 13.5px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .msg-bubble.ai {
-            background: var(--ai-bg);
-            border: 1px solid var(--border);
-            color: var(--text-1);
-            border-bottom-left-radius: 4px;
-        }
-        .msg-bubble.user {
-            background: var(--user-bg);
-            border: 1px solid #374151;
-            color: var(--text-1);
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-empty {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            min-height: 200px;
-            text-align: center;
-            gap: 16px;
-        }
-        .chat-empty-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: var(--brand-dim);
-            border: 1px solid #f59e0b33;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .chat-empty-icon svg { width: 22px; height: 22px; color: var(--brand); }
-        .chat-empty p {
-            font-size: 13px;
-            color: var(--text-3);
-            margin: 0;
-            line-height: 1.6;
-        }
-        .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-        .chip {
-            font-size: 12px;
-            color: var(--text-2);
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            padding: 5px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all .15s;
-        }
-        .chip:hover { border-color: var(--brand); color: var(--brand); }
-
-        /* === TYPING INDICATOR === */
-        .typing-indicator { display: none; }
-        .typing-indicator.active { display: flex; }
-        .typing-dots { display: flex; gap: 4px; align-items: center; padding: 10px 14px; }
-        .typing-dots span {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--text-3);
-            animation: bounce 1.2s infinite;
-        }
-        .typing-dots span:nth-child(2) { animation-delay: .2s; }
-        .typing-dots span:nth-child(3) { animation-delay: .4s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: translateY(0); opacity: .4; }
-            40% { transform: translateY(-5px); opacity: 1; }
-        }
-
-        /* === INPUT AREA === */
-        .chat-input-area {
-            padding: 14px 16px;
-            border-top: 1px solid var(--border);
-            background: var(--surface-2);
-        }
-        .input-wrapper {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px 12px 10px 16px;
-            transition: border-color .15s;
-        }
-        .input-wrapper:focus-within { border-color: var(--brand); }
-        #chat-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-1);
-            font-family: 'Be Vietnam Pro', sans-serif;
-            font-size: 13.5px;
-            line-height: 1.5;
-            resize: none;
-            max-height: 120px;
-            min-height: 20px;
-        }
-        #chat-input::placeholder { color: var(--text-3); }
-
-        .send-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--brand);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: opacity .15s, transform .1s;
-        }
-        .send-btn:hover { opacity: .85; }
-        .send-btn:active { transform: scale(.94); }
-        .send-btn:disabled { opacity: .4; cursor: default; }
-        .send-btn svg { width: 15px; height: 15px; color: #111; }
-
-        #chat-error {
-            margin-top: 8px;
-            font-size: 12px;
-            color: #f87171;
-            display: none;
-            padding: 8px 12px;
-            background: #7f1d1d22;
-            border: 1px solid #7f1d1d55;
-            border-radius: var(--radius-sm);
-        }
-
-        /* === SUGGESTIONS === */
-        .suggestions-section { margin-top: 28px; }
-        .suggestions-section h2 {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-2);
-            margin: 0 0 12px;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-        }
-        #suggestions {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-        }
-        .product-card {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            text-decoration: none;
-            display: block;
-            transition: border-color .15s, transform .15s;
-        }
-        .product-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-        .product-img {
-            aspect-ratio: 1/1;
-            background: var(--surface-3);
-            overflow: hidden;
-        }
-        .product-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .product-body { padding: 12px 14px; }
-        .product-name {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-1);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .product-cat {
-            font-size: 11px;
-            color: var(--text-3);
-            margin-top: 4px;
-        }
-        .product-price {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--brand);
-            margin-top: 8px;
-        }
-    </style>
-
-    <div class="chat-root">
-        {{-- Header --}}
-        <div class="chat-header">
-            <div class="chat-header-icon">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
-                </svg>
+            <div class="min-w-0">
+                <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">Tư vấn AI</h1>
+                <p class="mt-1 text-sm text-slate-300">Hỏi nhanh – gợi ý sản phẩm phù hợp theo nhu cầu của bạn.</p>
             </div>
-            <div>
-                <h1>Tư vấn AI</h1>
-                <p>Tìm sản phẩm phù hợp nhanh chóng</p>
-            </div>
-        </div>
+        </header>
 
-        {{-- Chat box --}}
-        <div class="chat-box">
-            <div id="chat-messages">
-                @if($messages->isEmpty())
-                    <div class="chat-empty" id="empty-state">
-                        <div class="chat-empty-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/>
-                            </svg>
-                        </div>
-                        <p>Hỏi gì cũng được, mình tư vấn liền!</p>
-                        <div class="chips">
-                            <span class="chip" onclick="sendChip(this)">Giày đá bóng dưới 1 triệu</span>
-                            <span class="chip" onclick="sendChip(this)">Áo đấu màu vàng size L</span>
-                            <span class="chip" onclick="sendChip(this)">Giày sân cỏ nhân tạo</span>
-                        </div>
-                    </div>
-                @else
-                    @foreach($messages as $m)
-                        <div class="msg-row {{ $m->role === 'user' ? 'user' : '' }}">
-                            <div class="msg-avatar {{ $m->role === 'user' ? 'user' : 'ai' }}">
-                                {{ $m->role === 'user' ? 'U' : 'AI' }}
+        <section class="mt-6 rounded-2xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+            <div class="flex flex-col h-[560px] max-h-[70vh]">
+                <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-white">
+                    @if($messages->isEmpty())
+                        <div id="empty-state" class="h-full min-h-[240px] flex flex-col items-center justify-center text-center gap-4">
+                            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12c0 4.556 4.03 8.25 9 8.25.981 0 1.927-.144 2.815-.411.9.334 2.14.625 3.685.661-.539-.624-.994-1.53-1.174-2.514A7.707 7.707 0 0021.75 12c0-4.556-4.03-8.25-9-8.25s-9 3.694-9 8.25z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 12h.008v.008H8.25V12zm3.75 0h.008v.008H12V12zm3.75 0h.008v.008h-.008V12z" />
+                                </svg>
                             </div>
-                            <div class="msg-bubble {{ $m->role === 'user' ? 'user' : 'ai' }}">{{ $m->content }}</div>
-                        </div>
-                    @endforeach
-                @endif
 
-                {{-- Typing indicator --}}
-                <div class="msg-row typing-indicator" id="typing">
-                    <div class="msg-avatar ai">AI</div>
-                    <div class="msg-bubble ai" style="padding: 0;">
-                        <div class="typing-dots">
-                            <span></span><span></span><span></span>
+                            <div class="space-y-1">
+                                <p class="text-sm font-semibold text-slate-900">Hỏi gì cũng được, mình tư vấn liền!</p>
+                                <p class="text-xs text-slate-500">Gợi ý nhanh: chọn một câu bên dưới để bắt đầu.</p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 justify-center" aria-label="Gợi ý nhanh">
+                                <button type="button" class="inline-flex items-center h-8 px-3 rounded-full text-xs font-semibold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" onclick="sendChip(this)">
+                                    Giày đá bóng dưới 1 triệu
+                                </button>
+                                <button type="button" class="inline-flex items-center h-8 px-3 rounded-full text-xs font-semibold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" onclick="sendChip(this)">
+                                    Áo đấu màu vàng size L
+                                </button>
+                                <button type="button" class="inline-flex items-center h-8 px-3 rounded-full text-xs font-semibold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" onclick="sendChip(this)">
+                                    Giày sân cỏ nhân tạo
+                                </button>
+                            </div>
+                        </div>
+                    @else
+                        @foreach($messages as $m)
+                            @if ($m->role === 'user')
+                                <div class="flex justify-end">
+                                    <div class="max-w-[85%]">
+                                        <div class="flex items-end justify-end">
+                                            <div class="rounded-2xl rounded-br-md bg-slate-900 text-white px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words">{{ $m->content }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex justify-start">
+                                    <div class="max-w-[85%]">
+                                        <div class="flex items-end gap-2 justify-start">
+                                            <div class="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px] font-extrabold">VT</div>
+                                            <div class="rounded-2xl rounded-bl-md bg-white border border-slate-200 text-slate-900 px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words">{{ $m->content }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    @endif
+
+                    <div id="typing" class="hidden flex justify-start">
+                        <div class="max-w-[85%]">
+                            <div class="flex items-end gap-2 justify-start">
+                                <div class="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px] font-extrabold">VT</div>
+                                <div class="rounded-2xl rounded-bl-md bg-white border border-slate-200 text-slate-900 px-3 py-2">
+                                    <div class="flex items-center gap-1">
+                                        <span class="inline-block h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce"></span>
+                                        <span class="inline-block h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce" style="animation-delay:120ms"></span>
+                                        <span class="inline-block h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce" style="animation-delay:240ms"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="chat-input-area">
-                <div class="input-wrapper">
-                    <textarea id="chat-input" rows="1" placeholder="Ví dụ: Mình cần giày dưới 1 triệu, dễ bám sân..."></textarea>
-                    <button class="send-btn" id="send-btn" type="button">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5"/>
-                        </svg>
-                    </button>
+                <div class="px-4 pb-4 bg-white">
+                    <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
+                        <textarea
+                            id="chat-input"
+                            rows="1"
+                            placeholder="Ví dụ: Mình cần giày dưới 1 triệu, dễ bám sân..."
+                            class="flex-1 resize-none bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none max-h-28"
+                        ></textarea>
+
+                        <button
+                            id="send-btn"
+                            type="button"
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 disabled:opacity-50"
+                            aria-label="Gửi"
+                        >
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p id="chat-error" class="mt-2 hidden text-xs text-red-600"></p>
                 </div>
-                <div id="chat-error"></div>
             </div>
-        </div>
+        </section>
 
-        {{-- Suggestions --}}
-        <div class="suggestions-section" id="suggestions-section" style="{{ 'display:none' }}">
-            <h2>Gợi ý sản phẩm</h2>
-            <div id="suggestions"></div>
-        </div>
+        <section id="suggestions-section" class="mt-8 hidden">
+            <h2 class="text-xs font-extrabold tracking-wide uppercase text-slate-200">Gợi ý sản phẩm</h2>
+            <div id="suggestions" class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
     </div>
 
     <script>
@@ -406,24 +129,36 @@
         function addMessage(role, content) {
             if (emptyState) emptyState.remove();
             const row = document.createElement('div');
-            row.className = 'msg-row' + (role === 'user' ? ' user' : '');
 
-            const avatar = document.createElement('div');
-            avatar.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'ai');
-            avatar.textContent = role === 'user' ? 'U' : 'AI';
+            if (role === 'user') {
+                row.className = 'flex justify-end';
+                row.innerHTML = `
+                    <div class="max-w-[85%]">
+                        <div class="flex items-end justify-end">
+                            <div class="rounded-2xl rounded-br-md bg-slate-900 text-white px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words"></div>
+                        </div>
+                    </div>
+                `;
+                row.querySelector('div.rounded-2xl').textContent = content;
+            } else {
+                row.className = 'flex justify-start';
+                row.innerHTML = `
+                    <div class="max-w-[85%]">
+                        <div class="flex items-end gap-2 justify-start">
+                            <div class="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px] font-extrabold">VT</div>
+                            <div class="rounded-2xl rounded-bl-md bg-white border border-slate-200 text-slate-900 px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words"></div>
+                        </div>
+                    </div>
+                `;
+                row.querySelector('div.rounded-2xl').textContent = content;
+            }
 
-            const bubble = document.createElement('div');
-            bubble.className = 'msg-bubble ' + (role === 'user' ? 'user' : 'ai');
-            bubble.textContent = content;
-
-            row.appendChild(avatar);
-            row.appendChild(bubble);
             messagesEl.insertBefore(row, typing);
             messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
         function setTyping(show) {
-            typing.classList.toggle('active', show);
+            typing.classList.toggle('hidden', !show);
             messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
@@ -433,38 +168,39 @@
             items.forEach(p => {
                 const card = document.createElement('a');
                 card.href = p.url || '#';
-                card.className = 'product-card';
+                card.className = 'group block rounded-2xl border border-slate-200 bg-white overflow-hidden hover:border-slate-300 transition';
 
                 const imgWrap = document.createElement('div');
-                imgWrap.className = 'product-img';
-                if (p.image) imgWrap.innerHTML = `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`;
+                imgWrap.className = 'aspect-square bg-slate-50 overflow-hidden';
+                if (p.image) imgWrap.innerHTML = `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" class="h-full w-full object-contain p-4 transition-transform group-hover:scale-[1.02]">`;
+                else imgWrap.innerHTML = `<div class="h-full w-full flex items-center justify-center text-slate-300">Không có ảnh</div>`;
 
                 const body = document.createElement('div');
-                body.className = 'product-body';
+                body.className = 'p-4';
                 body.innerHTML = `
-                    <div class="product-name">${esc(p.name)}</div>
-                    ${p.category ? `<div class="product-cat">${esc(p.category)}</div>` : ''}
-                    <div class="product-price">${Number(p.price || 0).toLocaleString('vi-VN')}đ</div>
+                    <div class="text-sm font-bold text-slate-900 leading-snug line-clamp-2">${esc(p.name)}</div>
+                    ${p.category ? `<div class="mt-1 text-xs text-slate-500">${esc(p.category)}</div>` : ''}
+                    <div class="mt-2 text-base font-extrabold text-amber-600">${Number(p.price || 0).toLocaleString('vi-VN')}đ</div>
                 `;
 
                 card.appendChild(imgWrap);
                 card.appendChild(body);
                 suggestions.appendChild(card);
             });
-            sugSection.style.display = 'block';
+            sugSection.classList.remove('hidden');
         }
 
         function showError(msg) {
             errorBox.textContent = msg;
-            errorBox.style.display = 'block';
-            setTimeout(() => { errorBox.style.display = 'none'; }, 5000);
+            errorBox.classList.remove('hidden');
+            setTimeout(() => { errorBox.classList.add('hidden'); }, 5000);
         }
 
         async function submit(text) {
             text = (text || '').trim();
             if (!text) return;
 
-            errorBox.style.display = 'none';
+            errorBox.classList.add('hidden');
             addMessage('user', text);
             inputEl.value = '';
             autoResize();

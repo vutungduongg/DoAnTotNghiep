@@ -36,6 +36,7 @@
                                 Sản phẩm
                             </a>
                             <a href="{{ route('ai-chat.index') }}"
+                            onclick="if (window.VT_AI_CHAT_WIDGET && typeof window.VT_AI_CHAT_WIDGET.open === 'function') { window.VT_AI_CHAT_WIDGET.open(); return false; }"
                             class="text-sm transition-colors hover:text-white" style="color:#9ca3af; white-space:nowrap;">
                                 Chat AI
                             </a>

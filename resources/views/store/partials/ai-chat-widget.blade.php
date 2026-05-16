@@ -163,6 +163,14 @@
             if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
+        // Expose minimal API for other links/buttons to open the widget.
+        // If the widget isn't present on a page, callers should fall back to normal navigation.
+        try {
+            window.VT_AI_CHAT_WIDGET = window.VT_AI_CHAT_WIDGET || {};
+            window.VT_AI_CHAT_WIDGET.open = showWidget;
+            window.VT_AI_CHAT_WIDGET.close = hideWidget;
+        } catch (e) {}
+
         if (closeEl) closeEl.addEventListener('click', hideWidget);
         launcherEl.addEventListener('click', showWidget);
 
