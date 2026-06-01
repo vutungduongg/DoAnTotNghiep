@@ -11,12 +11,21 @@ class CartController extends Controller
 {
     public function index()
     {
-        $items = Cart::items();
+        $items = $this->hydrateStockForCartItems(Cart::items());
         $totals = Cart::totals($items);
+
+        $canCheckout = true;
+        foreach ($items as $item) {
+            if (!empty($item['stock_error'])) {
+                $canCheckout = false;
+                break;
+            }
+        }
 
         return view('store.cart.index', [
             'items' => $items,
             'totals' => $totals,
+            'canCheckout' => $canCheckout,
         ]);
     }
 
@@ -53,7 +62,36 @@ class CartController extends Controller
                 ->withInput();
         }
 
-        Cart::add($product, $variant, (int) ($validated['quantity'] ?? 1));
+        $qtyToAdd = (int) ($validated['quantity'] ?? 1);
+        $qtyToAdd = max(1, min(99, $qtyToAdd));
+
+        if ($variant !== null) {
+            $stock = (int) $variant->stock;
+            if ($stock <= 0) {
+                return back()
+                    ->withErrors(['variant_id' => 'Size này đã hết hàng.'])
+                    ->withInput();
+            }
+
+            $key = Cart::key($product->id, $variant->id);
+            $existingQty = (int) (Cart::items()[$key]['quantity'] ?? 0);
+            $newTotal = $existingQty + $qtyToAdd;
+
+            if ($newTotal > $stock) {
+                $allowedToAdd = max(0, $stock - $existingQty);
+                if ($allowedToAdd <= 0) {
+                    return back()
+                        ->withErrors(['quantity' => 'Số lượng trong giỏ đã đạt tối đa theo tồn kho (còn '.$stock.').'])
+                        ->withInput();
+                }
+
+                Cart::add($product, $variant, $allowedToAdd);
+
+                return back()->with('status', 'Chỉ còn '.$stock.' sản phẩm cho size này. Đã thêm '.$allowedToAdd.' vào giỏ hàng.');
+            }
+        }
+
+        Cart::add($product, $variant, $qtyToAdd);
 
         return back()->with('status', 'Đã thêm vào giỏ hàng.');
     }
@@ -64,7 +102,33 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:0', 'max:99'],
         ]);
 
-        Cart::update($key, (int) $validated['quantity']);
+        $items = Cart::items();
+        $item = $items[$key] ?? null;
+        if (!$item) {
+            return back();
+        }
+
+        $requestedQty = (int) $validated['quantity'];
+
+        $variantId = $item['variant_id'] ?? null;
+        if (!empty($variantId)) {
+            $variant = ProductVariant::query()->whereKey($variantId)->first();
+            $stock = (int) ($variant?->stock ?? 0);
+
+            if ($stock <= 0) {
+                Cart::update($key, 0);
+
+                return back()->with('status', 'Sản phẩm/size này đã hết hàng và đã được xóa khỏi giỏ.');
+            }
+
+            if ($requestedQty > $stock) {
+                Cart::update($key, $stock);
+
+                return back()->with('status', 'Chỉ còn '.$stock.' sản phẩm cho size này. Đã cập nhật số lượng về '.$stock.'.');
+            }
+        }
+
+        Cart::update($key, $requestedQty);
 
         return back()->with('status', 'Đã cập nhật giỏ hàng.');
     }
@@ -81,5 +145,52 @@ class CartController extends Controller
         Cart::clear();
 
         return back()->with('status', 'Đã xóa toàn bộ giỏ hàng.');
+    }
+
+    /**
+     * @param array<string, array> $items
+     * @return array<string, array>
+     */
+    private function hydrateStockForCartItems(array $items): array
+    {
+        $variantIds = [];
+        foreach ($items as $item) {
+            if (!empty($item['variant_id'])) {
+                $variantIds[] = (int) $item['variant_id'];
+            }
+        }
+        $variantIds = array_values(array_unique(array_filter($variantIds)));
+
+        $stockMap = [];
+        if ($variantIds !== []) {
+            $stockMap = ProductVariant::query()
+                ->whereIn('id', $variantIds)
+                ->pluck('stock', 'id')
+                ->all();
+        }
+
+        foreach ($items as $k => $item) {
+            if (empty($item['variant_id'])) {
+                $items[$k]['stock_error'] = null;
+                continue;
+            }
+
+            $stock = (int) ($stockMap[(int) $item['variant_id']] ?? 0);
+            $qty = (int) ($item['quantity'] ?? 0);
+
+            $items[$k]['stock'] = $stock;
+            $items[$k]['is_out_of_stock'] = $stock <= 0;
+            $items[$k]['is_low_stock'] = $stock > 0 && $stock <= ProductVariant::LOW_STOCK_THRESHOLD;
+
+            if ($stock <= 0) {
+                $items[$k]['stock_error'] = 'Hết hàng';
+            } elseif ($qty > $stock) {
+                $items[$k]['stock_error'] = 'Vượt tồn kho (còn '.$stock.')';
+            } else {
+                $items[$k]['stock_error'] = null;
+            }
+        }
+
+        return $items;
     }
 }

@@ -83,6 +83,8 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $product->load(['variants' => fn ($q) => $q->orderBy('size')]);
+
         return view('admin.products.edit', [
             'product' => $product,
             'categories' => Category::query()->orderBy('name')->get(),

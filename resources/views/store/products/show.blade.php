@@ -14,10 +14,17 @@
 
     @php
         $cartCount = \App\Support\Cart::count();
-        $selectedVariantId = old('variant_id') ?? ($product->variants->first()?->id);
+        $firstInStockVariant = $product->variants->firstWhere('stock', '>', 0);
+        $selectedVariantId = old('variant_id') ?? ($firstInStockVariant?->id ?? $product->variants->first()?->id);
+        $selectedVariant = $selectedVariantId ? $product->variants->firstWhere('id', (int) $selectedVariantId) : null;
+        if ($selectedVariant && (int) $selectedVariant->stock <= 0 && $firstInStockVariant) {
+            $selectedVariantId = $firstInStockVariant->id;
+            $selectedVariant = $firstInStockVariant;
+        }
         $qty = (int) old('quantity', 1);
         $qty = max(1, min(99, $qty));
         $hasVariantPrices = $product->variants->whereNotNull('price')->count() > 0;
+        $isAllVariantsOutOfStock = $product->variants->count() > 0 && $product->variants->where('stock', '>', 0)->count() === 0;
     @endphp
 
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
@@ -123,7 +130,14 @@
                     </a>
                 @endif
 
-                <h1 class="mt-2 text-2xl md:text-3xl font-bold leading-tight text-slate-900">{{ $product->name }}</h1>
+                <div class="mt-2 flex items-start justify-between gap-3">
+                    <h1 class="text-2xl md:text-3xl font-bold leading-tight text-slate-900">{{ $product->name }}</h1>
+                    @if ($isAllVariantsOutOfStock)
+                        <span class="shrink-0 inline-flex items-center h-7 px-3 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-extrabold tracking-wide">
+                            HẾT HÀNG
+                        </span>
+                    @endif
+                </div>
 
                 <div class="mt-4 flex items-end gap-3">
                     <div class="text-2xl font-extrabold text-amber-600">
@@ -151,6 +165,11 @@
                             </div>
                             <div class="mt-3 grid grid-cols-5 gap-2">
                                 @foreach ($product->variants as $variant)
+                                    @php
+                                        $vStock = (int) $variant->stock;
+                                        $vIsOut = $vStock <= 0;
+                                        $vIsLow = $vStock > 0 && $vStock <= \App\Models\ProductVariant::LOW_STOCK_THRESHOLD;
+                                    @endphp
                                     <label class="block">
                                         <input
                                             type="radio"
@@ -158,51 +177,70 @@
                                             value="{{ $variant->id }}"
                                             class="peer sr-only"
                                             {{ (string) $variant->id === (string) $selectedVariantId ? 'checked' : '' }}
+                                            {{ $vIsOut ? 'disabled' : '' }}
                                             required
                                         />
-                                        <span class="inline-flex w-full items-center justify-center h-10 rounded border border-slate-200 text-sm text-slate-700 peer-checked:border-slate-900 peer-checked:bg-slate-900 peer-checked:text-white">
-                                            {{ $variant->size }}
+                                        <span class="relative inline-flex w-full items-center justify-center h-10 rounded border border-slate-200 text-sm text-slate-700 peer-checked:border-slate-900 peer-checked:bg-slate-900 peer-checked:text-white {{ $vIsOut ? 'opacity-40 cursor-not-allowed' : '' }}">
+                                            <span class="leading-none">{{ $variant->size }}</span>
+
+                                            @if ($vIsOut)
+                                                <span class="absolute -top-1 -right-1 inline-flex items-center h-5 px-2 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-bold">
+                                                    Hết
+                                                </span>
+                                            @elseif ($vIsLow)
+                                                <span class="absolute -top-1 -right-1 inline-flex items-center h-5 px-2 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">
+                                                    Còn {{ $vStock }}
+                                                </span>
+                                            @endif
                                         </span>
                                     </label>
                                 @endforeach
                             </div>
                             <x-input-error :messages="$errors->get('variant_id')" class="mt-2" />
+
+                            @if ($isAllVariantsOutOfStock)
+                                <div class="mt-3 px-4 py-3 rounded-xl text-sm bg-rose-50 border border-rose-200 text-rose-900">
+                                    Sản phẩm hiện đã hết hàng. Vui lòng quay lại sau.
+                                </div>
+                            @endif
                         </div>
                     @endif
 
-                    <div>
-                        <p class="text-xs font-semibold tracking-wide uppercase text-slate-700">Số lượng</p>
-                        <div class="mt-3 inline-flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden">
-                            <button
-                                type="button"
-                                class="h-10 w-10 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
-                                onclick="const i=this.parentElement.querySelector('input[name=quantity]'); i.value=Math.max(1, (+i.value||1)-1);"
-                                aria-label="Giảm số lượng"
-                            >
-                                −
-                            </button>
-                            <input
-                                name="quantity"
-                                type="number"
-                                min="1"
-                                max="99"
-                                value="{{ $qty }}"
-                                class="h-10 w-14 text-center text-sm outline-none border-x border-slate-200"
-                            />
-                            <button
-                                type="button"
-                                class="h-10 w-10 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
-                                onclick="const i=this.parentElement.querySelector('input[name=quantity]'); i.value=Math.min(99, (+i.value||1)+1);"
-                                aria-label="Tăng số lượng"
-                            >
-                                +
-                            </button>
+                    @if (!$isAllVariantsOutOfStock)
+                        <div>
+                            <p class="text-xs font-semibold tracking-wide uppercase text-slate-700">Số lượng</p>
+                            <div class="mt-3 inline-flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden">
+                                <button
+                                    type="button"
+                                    class="h-10 w-10 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
+                                    onclick="const i=this.parentElement.querySelector('input[name=quantity]'); i.value=Math.max(1, (+i.value||1)-1);"
+                                    aria-label="Giảm số lượng"
+                                >
+                                    −
+                                </button>
+                                <input
+                                    name="quantity"
+                                    type="number"
+                                    min="1"
+                                    max="99"
+                                    value="{{ $qty }}"
+                                    class="h-10 w-14 text-center text-sm outline-none border-x border-slate-200"
+                                />
+                                <button
+                                    type="button"
+                                    class="h-10 w-10 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
+                                    onclick="const i=this.parentElement.querySelector('input[name=quantity]'); i.value=Math.min(99, (+i.value||1)+1);"
+                                    aria-label="Tăng số lượng"
+                                >
+                                    +
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div class="pt-1">
-                        <button type="submit" class="w-full h-12 rounded-xl bg-amber-400 text-slate-900 text-sm font-extrabold tracking-wide hover:bg-amber-300">
-                            MUA HÀNG
+                        <button type="submit" class="w-full h-12 rounded-xl bg-amber-400 text-slate-900 text-sm font-extrabold tracking-wide hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed" {{ $isAllVariantsOutOfStock ? 'disabled' : '' }}>
+                            {{ $isAllVariantsOutOfStock ? 'HẾT HÀNG' : 'MUA HÀNG' }}
                         </button>
                         <a href="{{ route('cart.index') }}" class="mt-3 block text-center text-sm text-slate-600 hover:text-slate-900">
                             Xem giỏ hàng

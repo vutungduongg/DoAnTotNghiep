@@ -77,6 +77,12 @@
                 <form class="mt-6 bg-white border border-slate-200 rounded-2xl p-6 md:p-7" method="POST" action="{{ route('checkout.store') }}">
                     @csrf
 
+                    @if ($errors->has('stock'))
+                        <div class="mb-4 px-4 py-3 rounded-xl text-sm bg-rose-50 border border-rose-200 text-rose-900">
+                            {{ $errors->first('stock') }}
+                        </div>
+                    @endif
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700">Họ và tên</label>

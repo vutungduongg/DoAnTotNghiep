@@ -80,6 +80,14 @@
         </div>
     @endif
 
+    @if (isset($canCheckout) && !$canCheckout)
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="px-4 py-3 rounded-xl text-sm bg-rose-50 border border-rose-200 text-rose-900">
+                Có sản phẩm đã hết hàng hoặc vượt tồn kho. Vui lòng cập nhật giỏ hàng để tiếp tục đặt hàng.
+            </div>
+        </div>
+    @endif
+
     <main class="max-w-6xl mx-auto px-4 py-8">
         <h1 class="text-3xl font-extrabold tracking-tight">GIỎ HÀNG CỦA BẠN</h1>
 
@@ -95,10 +103,10 @@
                 <section class="lg:col-span-8">
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                         <div class="hidden md:grid grid-cols-12 gap-3 px-6 py-4 border-b border-slate-200 text-xs font-semibold tracking-wide uppercase text-slate-500">
-                            <div class="col-span-7">Sản phẩm</div>
+                            <div class="col-span-6">Sản phẩm</div>
                             <div class="col-span-2">Giá</div>
                             <div class="col-span-2">Số lượng</div>
-                            <div class="col-span-1 text-right whitespace-nowrap">Thành tiền</div>
+                            <div class="col-span-2 text-right whitespace-nowrap">Thành tiền</div>
                         </div>
 
                         @foreach ($items as $key => $item)
@@ -142,6 +150,18 @@
                                                 Kích cỡ: <span class="font-semibold text-slate-700">-</span>
                                             @endif
                                         </div>
+
+                                        @if (!empty($item['variant_id']))
+                                            @if (!empty($item['is_out_of_stock']))
+                                                <div class="text-xs font-semibold text-rose-600">Hết hàng</div>
+                                            @elseif (!empty($item['is_low_stock']))
+                                                <div class="text-xs font-semibold text-amber-700">Sắp hết hàng (còn {{ (int) ($item['stock'] ?? 0) }})</div>
+                                            @endif
+
+                                            @if (!empty($item['stock_error']))
+                                                <div class="text-xs font-semibold text-rose-600">{{ $item['stock_error'] }}</div>
+                                            @endif
+                                        @endif
                                     </div>
                                 </div>
 
@@ -149,7 +169,7 @@
                                     {{ number_format((float) $item['price'], 0, ',', '.') }}đ
                                 </div>
 
-                                <div class="md:col-span-2">
+                                <div class="md:col-span-2 md:flex md:justify-center">
                                     <form method="POST" action="{{ route('cart.update', ['key' => $key]) }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden">
                                         @csrf
                                         @method('PATCH')
@@ -164,7 +184,7 @@
                                             name="quantity"
                                             value="{{ (int) $item['quantity'] }}"
                                             min="0"
-                                            max="99"
+                                            max="{{ !empty($item['variant_id']) ? min(99, max(0, (int) ($item['stock'] ?? 0))) : 99 }}"
                                             class="h-9 w-12 text-center text-sm outline-none border-x border-slate-200"
                                         />
                                         <button
@@ -176,8 +196,8 @@
                                     </form>
                                 </div>
 
-                                <div class="md:col-span-2 flex items-center justify-between md:justify-end gap-4">
-                                    <div class="text-sm font-extrabold text-amber-600 md:text-right">
+                                <div class="md:col-span-2 flex items-center justify-between md:justify-end gap-3">
+                                    <div class="text-sm font-extrabold text-amber-600 text-right whitespace-nowrap min-w-[96px]">
                                         {{ number_format((float) $line, 0, ',', '.') }}đ
                                     </div>
 
@@ -234,10 +254,16 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('checkout.create') }}" class="mt-6 inline-flex items-center justify-center w-full h-12 rounded-xl bg-emerald-600 text-white text-sm font-extrabold tracking-wide hover:bg-emerald-500">
-                            TIẾN HÀNH ĐẶT HÀNG
-                            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                        </a>
+                        @if (!empty($canCheckout) && $canCheckout)
+                            <a href="{{ route('checkout.create') }}" class="mt-6 inline-flex items-center justify-center w-full h-12 rounded-xl bg-emerald-600 text-white text-sm font-extrabold tracking-wide hover:bg-emerald-500">
+                                TIẾN HÀNH ĐẶT HÀNG
+                                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
+                        @else
+                            <div class="mt-6 inline-flex items-center justify-center w-full h-12 rounded-xl bg-slate-400 text-white text-sm font-extrabold tracking-wide cursor-not-allowed opacity-80">
+                                KHÔNG THỂ ĐẶT HÀNG
+                            </div>
+                        @endif
 
                         <div class="mt-4 text-xs text-slate-300">
                             <div class="flex items-start gap-2">
