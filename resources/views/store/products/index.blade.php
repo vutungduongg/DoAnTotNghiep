@@ -1,19 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Sản phẩm - {{ config('app.name', 'VT Store') }}</title>
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="font-sans antialiased bg-slate-50 text-slate-900">
-
-    @php
+@php
         $activeCategorySlug = (array)($filters['category'] ?? []);
         $isShoes = ($filters['type'] ?? '') === 'giay' || in_array('giay-bong-da', $activeCategorySlug, true);
         $isJersey = ($filters['type'] ?? '') === 'ao_dau' || in_array('ao-the-thao', $activeCategorySlug, true);
@@ -33,82 +18,26 @@
 
         $minPriceValue = is_numeric($filters['min_price'] ?? null) ? (float) $filters['min_price'] : 0;
         $maxPriceValue = is_numeric($filters['max_price'] ?? null) ? (float) $filters['max_price'] : 5000000;
-    @endphp
+@endphp
 
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="h-16 flex items-center gap-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 shrink-0">
-                    <span class="text-lg font-extrabold italic tracking-tight">VTSTORE</span>
-                </a>
+<x-store-layout title="Sản phẩm - {{ config('app.name', 'VT Store') }}" :search-value="($filters['q'] ?? '')" :search-action="route('products.index')">
+    <x-slot name="headerSearchHidden">
+        <input type="hidden" name="type" value="{{ $filters['type'] ?? '' }}" />
+        @foreach ((array)($filters['category'] ?? []) as $cat)
+            <input type="hidden" name="category[]" value="{{ $cat }}" />
+        @endforeach
+        @foreach ((array)($filters['stud'] ?? []) as $stud)
+            <input type="hidden" name="stud[]" value="{{ $stud }}" />
+        @endforeach
+        @foreach ((array)($filters['size'] ?? []) as $s)
+            <input type="hidden" name="size[]" value="{{ $s }}" />
+        @endforeach
+        <input type="hidden" name="min_price" value="{{ $filters['min_price'] ?? '' }}" />
+        <input type="hidden" name="max_price" value="{{ $filters['max_price'] ?? '' }}" />
+        <input type="hidden" name="sort" value="{{ $filters['sort'] ?? '' }}" />
+    </x-slot>
 
-                <nav class="hidden md:flex items-center gap-6 text-xs font-semibold tracking-wide uppercase text-slate-700">
-                    <a class="hover:text-slate-900 {{ $isShoes ? 'text-slate-900' : '' }}" href="{{ route('products.index', ['type' => 'giay']) }}">Giày bóng đá</a>
-                    <a class="hover:text-slate-900 {{ $isJersey ? 'text-slate-900' : '' }}" href="{{ route('products.index', ['type' => 'ao_dau']) }}">Áo bóng đá</a>
-                    <a class="hover:text-slate-900" href="{{ $phuKien ? route('products.index', ['category' => $phuKien->slug]) : route('products.index') }}">Phụ kiện</a>
-                </nav>
-
-                <form class="flex-1 flex justify-center" method="GET" action="{{ route('products.index') }}">
-                    <input type="hidden" name="type" value="{{ $filters['type'] ?? '' }}" />
-                    @foreach ((array)($filters['category'] ?? []) as $cat)
-                        <input type="hidden" name="category[]" value="{{ $cat }}" />
-                    @endforeach
-                    @foreach ((array)($filters['stud'] ?? []) as $stud)
-                        <input type="hidden" name="stud[]" value="{{ $stud }}" />
-                    @endforeach
-                    @foreach ((array)($filters['size'] ?? []) as $s)
-                        <input type="hidden" name="size[]" value="{{ $s }}" />
-                    @endforeach
-                    <input type="hidden" name="min_price" value="{{ $filters['min_price'] ?? '' }}" />
-                    <input type="hidden" name="max_price" value="{{ $filters['max_price'] ?? '' }}" />
-                    <input type="hidden" name="sort" value="{{ $filters['sort'] ?? '' }}" />
-
-                    <div class="w-full max-w-lg relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                        </svg>
-                        <input
-                            name="q"
-                            value="{{ $filters['q'] ?? '' }}"
-                            placeholder="Tìm kiếm sản phẩm..."
-                            class="w-full h-10 pl-9 pr-3 rounded-full border border-slate-200 bg-slate-100 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
-                        />
-                    </div>
-                </form>
-
-                <div class="flex items-center gap-3 shrink-0 text-xs font-semibold tracking-wide uppercase">
-                    @auth
-                        <a href="{{ route('profile.edit') }}" class="text-slate-700 hover:text-slate-900">Tài khoản</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-slate-700 hover:text-slate-900">Đăng nhập</a>
-                        <span class="text-slate-300">/</span>
-                        <a href="{{ route('register') }}" class="text-slate-700 hover:text-slate-900">Đăng ký</a>
-                    @endauth
-
-                    <a href="{{ route('cart.index') }}" class="ml-2 relative inline-flex items-center justify-center h-10 w-10 rounded-full hover:bg-slate-100" aria-label="Giỏ hàng">
-                        <svg class="h-5 w-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                        </svg>
-
-                        @php $cartCount = \App\Support\Cart::count(); @endphp
-                        @if ($cartCount > 0)
-                            <span class="absolute -top-1 -right-1 min-w-4 h-4 px-1 inline-flex items-center justify-center rounded-full bg-emerald-600 text-white text-[10px] font-bold">
-                                {{ $cartCount }}
-                            </span>
-                        @endif
-                    </a>
-
-                    @auth
-                        <a href="{{ route('orders.index') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Đơn hàng</a>
-                    @else
-                        <a href="{{ route('orders.track.form') }}" class="hidden md:inline text-xs font-semibold tracking-wide uppercase text-slate-700 hover:text-slate-900">Tra cứu đơn</a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 py-6">
+    <div class="max-w-6xl mx-auto px-4 py-6">
         <nav class="text-xs text-slate-500">
             <a href="{{ route('home') }}" class="hover:text-slate-900">Trang chủ</a>
             <span class="mx-1">·</span>
@@ -295,7 +224,7 @@
                 </div>
             </section>
         </div>
-    </main>
+    </div>
 
     <footer class="bg-slate-900 text-slate-200 mt-10">
         <div class="max-w-6xl mx-auto px-4 py-10">
@@ -350,7 +279,4 @@
         })();
     </script>
 
-    @include('store.partials.ai-chat-widget')
-
-</body>
-</html>
+</x-store-layout>

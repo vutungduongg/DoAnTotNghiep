@@ -6,8 +6,8 @@
             </span>
 
             <div class="min-w-0">
-                <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">Tư vấn AI</h1>
-                <p class="mt-1 text-sm text-slate-300">Hỏi nhanh – gợi ý sản phẩm phù hợp theo nhu cầu của bạn.</p>
+                <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Tư vấn AI</h1>
+                <p class="mt-1 text-sm text-slate-600">Hỏi nhanh – gợi ý sản phẩm phù hợp theo nhu cầu của bạn.</p>
             </div>
         </header>
 
@@ -106,7 +106,7 @@
         </section>
 
         <section id="suggestions-section" class="mt-8 hidden">
-            <h2 class="text-xs font-extrabold tracking-wide uppercase text-slate-200">Gợi ý sản phẩm</h2>
+            <h2 class="text-xs font-extrabold tracking-wide uppercase text-slate-700">Gợi ý sản phẩm</h2>
             <div id="suggestions" class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
     </div>
