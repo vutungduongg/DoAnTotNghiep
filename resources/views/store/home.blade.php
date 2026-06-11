@@ -3,7 +3,7 @@
             <div class="max-w-6xl mx-auto px-4">
                 <div class="py-10 md:py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                     <div>
-                        <span class="inline-flex items-center h-6 px-2 rounded bg-emerald-600/20 text-emerald-200 text-xs font-semibold">BỘ SƯU TẬP MỚI 2024</span>
+                        <span class="inline-flex items-center h-6 px-2 rounded bg-emerald-600/20 text-emerald-200 text-xs font-semibold">BỘ SƯU TẬP MỚI 2026</span>
                         <h1 class="mt-4 text-3xl md:text-4xl font-bold leading-tight">CHINH PHỤC MỌI TRẬN ĐẤU</h1>
                         <p class="mt-3 text-slate-200 text-sm md:text-base max-w-xl">
                             Khám phá bộ sưu tập trang phục và thiết bị bóng đá cao cấp, phù hợp cho mọi phong cách thi đấu.

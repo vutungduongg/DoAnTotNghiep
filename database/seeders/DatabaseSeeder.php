@@ -327,11 +327,11 @@ class DatabaseSeeder extends Seeder
         }
 
         $p16 = Product::query()->firstOrCreate(
-            ['slug' => 'ao-bong-da-xanh-luc-phoi-soc-vang-neon-nang-dong-2024'],
+            ['slug' => 'ao-bong-da-xanh-luc-phoi-soc-vang-neon-nang-dong-2026'],
             [
                 'category_id' => $shirts->id,
                 'image_path' => 'images/16.jpg',
-                'name' => 'Áo Bóng Đá Xanh Lục Phối Sọc Vàng Neon Năng Động 2024',
+                'name' => 'Áo Bóng Đá Xanh Lục Phối Sọc Vàng Neon Năng Động 2026',
                 'description' => "Sở hữu màu sắc và họa tiết đơn giản, giúp dễ in ấn và phù hợp với mọi lứa tuổi.\nChất vải Fake Thái cao cấp luôn được khách hàng ưa chuộng.\nThoát hút mồ hôi tốt.\nThoát hơi nhanh.\nChống tia UV.",
                 'base_price' => 199000,
                 'is_active' => true,

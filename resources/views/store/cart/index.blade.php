@@ -97,20 +97,26 @@
                                     {{ number_format((float) $item['price'], 0, ',', '.') }}đ
                                 </div>
 
-                                <div class="md:col-span-2 md:flex md:justify-center">
+                                <div class="md:col-span-2 md:flex md:justify-center" x-data="{ quantity: {{ (int) $item['quantity'] }} }">
                                     <form method="POST" action="{{ route('cart.update', ['key' => $key]) }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden">
                                         @csrf
                                         @method('PATCH')
                                         <button
                                             type="button"
                                             class="h-9 w-9 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
-                                            onclick="const f=this.form; const i=f.querySelector('input[name=quantity]'); i.value=Math.max(0, (+i.value||0)-1); f.submit();"
+                                            x-on:click.prevent="
+                                                if (quantity > 0) {
+                                                    quantity--;
+                                                    $nextTick(() => $el.closest('form').submit());
+                                                }
+                                            "
                                             aria-label="Giảm số lượng"
                                         >−</button>
                                         <input
                                             type="number"
                                             name="quantity"
-                                            value="{{ (int) $item['quantity'] }}"
+                                            x-model="quantity"
+                                            x-ref="quantityInput"
                                             min="0"
                                             max="{{ !empty($item['variant_id']) ? min(99, max(0, (int) ($item['stock'] ?? 0))) : 99 }}"
                                             class="h-9 w-12 text-center text-sm outline-none border-x border-slate-200"
@@ -118,7 +124,13 @@
                                         <button
                                             type="button"
                                             class="h-9 w-9 inline-flex items-center justify-center text-slate-700 hover:bg-slate-50"
-                                            onclick="const f=this.form; const i=f.querySelector('input[name=quantity]'); i.value=Math.min(99, (+i.value||0)+1); f.submit();"
+                                            x-on:click.prevent="
+                                                const max = parseInt($refs.quantityInput.getAttribute('max'));
+                                                if (quantity < max) {
+                                                    quantity++;
+                                                    $nextTick(() => $el.closest('form').submit());
+                                                }
+                                            "
                                             aria-label="Tăng số lượng"
                                         >+</button>
                                     </form>

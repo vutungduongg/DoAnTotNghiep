@@ -4,7 +4,7 @@
 <div class="max-w-3xl mx-auto">
     <h1 class="text-2xl font-semibold text-gray-900">Sửa danh mục</h1>
 
-    <form class="mt-5 space-y-4" method="POST" action="{{ route('admin.categories.update', $category) }}">
+    <form class="mt-5 space-y-4" method="POST" action="{{ Route::has('admin.categories.update') ? route('admin.categories.update', $category) : route('admin.dashboard') }}">
         @csrf
         @method('PUT')
 
@@ -33,7 +33,7 @@
 
         <div class="flex gap-3">
             <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700">Cập nhật</button>
-            <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 rounded-lg text-sm bg-gray-900 text-white hover:bg-gray-800" style="text-decoration:none;">Hủy</a>
+            <a href="{{ Route::has('admin.categories.index') ? route('admin.categories.index') : route('admin.dashboard') }}" class="px-4 py-2 rounded-lg text-sm bg-gray-900 text-white hover:bg-gray-800" style="text-decoration:none;">Hủy</a>
         </div>
     </form>
 </div>

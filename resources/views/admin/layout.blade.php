@@ -37,7 +37,7 @@
 
                 $items = [
                     $navItem('admin.dashboard', 'Bảng điều khiển', 'grid'),
-                    $navItem('admin.categories.index', 'Quản lý danh mục', 'tag'),
+                    // $navItem('admin.categories.index', 'Quản lý danh mục', 'tag'),
                     $navItem('admin.products.index', 'Quản lý sản phẩm', 'box'),
                     $navItem('admin.inventory.index', 'Quản lý kho', 'box'),
                     $navItem('admin.orders.index', 'Quản lý đơn hàng', 'clipboard'),

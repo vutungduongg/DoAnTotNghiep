@@ -7,10 +7,10 @@
                 <h1 class="text-2xl font-semibold text-gray-900">Danh mục</h1>
                 <p class="text-sm mt-1 text-gray-500">Quản lý các loại sản phẩm như giày, áo, phụ kiện.</p>
             </div>
-            <a href="{{ route('admin.categories.create') }}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700" style="text-decoration:none;">Thêm danh mục</a>
+            <a href="{{ Route::has('admin.categories.create') ? route('admin.categories.create') : route('admin.dashboard') }}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700" style="text-decoration:none;">Thêm danh mục</a>
         </div>
 
-        <form class="mt-5 flex gap-3" method="GET" action="{{ route('admin.categories.index') }}">
+        <form class="mt-5 flex gap-3" method="GET" action="{{ Route::has('admin.categories.index') ? route('admin.categories.index') : route('admin.dashboard') }}">
             <input name="q" value="{{ $q }}" placeholder="Tìm theo tên/slug..." class="flex-1 px-3 py-2 rounded-lg text-sm bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300" />
             <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-900 text-white hover:bg-gray-800">Tìm</button>
         </form>
@@ -40,8 +40,8 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right whitespace-nowrap">
-                                <a href="{{ route('admin.categories.edit', $cat) }}" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700" style="text-decoration:none;">Sửa</a>
-                                <form class="inline" method="POST" action="{{ route('admin.categories.destroy', $cat) }}" onsubmit="return confirm('Xóa danh mục này?')">
+                                <a href="{{ Route::has('admin.categories.edit') ? route('admin.categories.edit', $cat) : route('admin.dashboard') }}" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700" style="text-decoration:none;">Sửa</a>
+                                <form class="inline" method="POST" action="{{ Route::has('admin.categories.destroy') ? route('admin.categories.destroy', $cat) : route('admin.dashboard') }}" onsubmit="return confirm('Xóa danh mục này?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="text-sm ml-3 font-semibold text-rose-600 hover:text-rose-700">Xóa</button>

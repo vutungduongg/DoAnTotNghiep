@@ -73,7 +73,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
         Route::put('/inventory/{variant}', [AdminInventoryController::class, 'update'])->name('inventory.update');
 
-        Route::resource('categories', AdminCategoryController::class)->except(['show']);
+        // Route::resource('categories', AdminCategoryController::class)->except(['show']);
         Route::resource('products', AdminProductController::class)->except(['show']);
 
         Route::post('/products/{product}/variants', [AdminProductVariantController::class, 'store'])->name('products.variants.store');

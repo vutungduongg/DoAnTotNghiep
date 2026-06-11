@@ -8,7 +8,7 @@
     <div class="flex items-end justify-between gap-4 flex-wrap">
         <div>
             <h1 class="text-2xl font-semibold text-gray-900">Quản lý kho hàng</h1>
-            <p class="mt-1 text-sm text-gray-600">Theo dõi tồn kho theo từng biến thể (size). Cảnh báo khi còn <= {{ (int) $lowThreshold }} và hết hàng khi stock = 0.</p>
+            <p class="mt-1 text-sm text-gray-600">Theo dõi tồn kho theo từng kích cỡ (size). Cảnh báo khi còn <= {{ (int) $lowThreshold }} và hết hàng khi stock = 0.</p>
         </div>
         <a href="{{ route('admin.products.index') }}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-900 text-white hover:bg-gray-800" style="text-decoration:none;">Quản lý sản phẩm</a>
     </div>
@@ -73,13 +73,13 @@
                     </div>
                 </div>
             @empty
-                <div class="px-5 py-10 text-center text-sm text-gray-600">Chưa có biến thể nào để quản lý kho.</div>
+                <div class="px-5 py-10 text-center text-sm text-gray-600">Chưa có kích cỡ nào để quản lý kho.</div>
             @endforelse
         </div>
 
         <div class="px-5 py-4 border-t border-gray-200 flex items-center justify-between gap-3">
-            <div class="text-sm text-gray-600">
-                Trang {{ (int) $variants->currentPage() }} / {{ (int) $variants->lastPage() }} · Tổng {{ (int) $variants->total() }} biến thể
+                <div class="text-sm text-gray-600">
+                Trang {{ (int) $variants->currentPage() }} / {{ (int) $variants->lastPage() }} · Tổng {{ (int) $variants->total() }} kích cỡ
             </div>
 
             <div class="flex items-center gap-2">

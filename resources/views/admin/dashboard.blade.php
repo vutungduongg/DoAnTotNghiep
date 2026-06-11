@@ -193,7 +193,7 @@
                         <div class="mt-2 text-sm leading-relaxed text-emerald-50/90">
                             Chỉ còn 3 ngày để kết thúc khuyến mãi giảm giá 20% cho danh mục giày bóng đá.
                         </div>
-                        <a href="{{ route('admin.categories.index') }}"
+                        <a href="{{ Route::has('admin.categories.index') ? route('admin.categories.index') : route('admin.dashboard') }}"
                            class="inline-flex items-center mt-4 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide bg-slate-900 text-white hover:bg-slate-800 transition-colors">
                             Kiểm tra ngay
                         </a>
